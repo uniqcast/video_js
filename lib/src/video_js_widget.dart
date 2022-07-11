@@ -23,7 +23,6 @@ class VideoJsWidgetState extends State<VideoJsWidget> {
   @override
   void dispose() {
     super.dispose();
-    widget.videoJsController.dispose();
     html.Element? ele = html.querySelector("#divId");
     if (html.querySelector("#divId") != null) {
       ele!.remove();
