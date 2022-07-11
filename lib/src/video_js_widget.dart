@@ -1,22 +1,16 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:video_js/src/web/video_js_scripts.dart';
 import 'dart:html' as html;
+import 'dart:math';
 import 'dart:ui' as ui;
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:video_js/src/web/video_js_scripts.dart';
 import 'package:video_js/video_js.dart';
 
 class VideoJsWidget extends StatefulWidget {
   final VideoJsController videoJsController;
-  final double height;
-  final double width;
 
-  const VideoJsWidget(
-      {Key? key,
-      required this.height,
-      required this.width,
-      required this.videoJsController})
+  const VideoJsWidget({Key? key, required this.videoJsController})
       : super(key: key);
 
   @override
@@ -82,16 +76,6 @@ class VideoJsWidgetState extends State<VideoJsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: widget.width,
-      height: widget.height,
-      child: kIsWeb
-          ? HtmlElementView(
-              viewType: elementId,
-            )
-          : Center(
-              child: Text("Video_js plugin just supported on web"),
-            ),
-    );
+    return HtmlElementView(viewType: elementId);
   }
 }
