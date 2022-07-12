@@ -60,21 +60,22 @@ class VideoJsOptions {
   /// play video but where you might not want to see an error displayed.
   final bool? suppressNotSupportedError;
 
-  VideoJsOptions(
-      {this.controls,
-      this.loop,
-      this.muted,
-      this.poster,
-      this.aspectRatio,
-      this.fluid,
-      this.language,
-      this.liveui,
-      this.notSupportedMessage,
-      this.playbackRates,
-      this.preferFullWindow,
-      this.responsive,
-      this.sources,
-      this.suppressNotSupportedError});
+  VideoJsOptions({
+    this.controls,
+    this.loop,
+    this.muted,
+    this.poster,
+    this.aspectRatio,
+    this.fluid,
+    this.language,
+    this.liveui,
+    this.notSupportedMessage,
+    this.playbackRates,
+    this.preferFullWindow,
+    this.responsive,
+    this.sources,
+    this.suppressNotSupportedError,
+  });
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -94,8 +95,9 @@ class VideoJsOptions {
     if (this.responsive != null) data['responsive'] = this.responsive;
     if (this.suppressNotSupportedError != null)
       data['suppressNotSupportedError'] = this.suppressNotSupportedError;
-    if (this.sources != null)
+    if (this.sources != null) {
       data['sources'] = this.sources!.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }

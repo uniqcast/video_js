@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:math';
-import 'package:flutter/cupertino.dart';
-import 'package:video_js/src/web/video_js_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:video_js/src/web/video_js_scripts.dart';
 import 'dart:html' as html;
 import 'dart:ui' as ui;
@@ -54,12 +53,13 @@ class VideoJsWidgetState extends State<VideoJsWidget> {
               ..style.minHeight = "100%"
               ..style.minHeight = "100%"
               ..style.width = "100%"
-              ..style.height = "auto"
-              ..className = "video-js vjs-default-skin",
+              //..style.height = "auto"
+              ..className = "video-js vjs-theme-city",
             html.ScriptElement()
               ..innerHtml = VideoJsScripts().videojsCode(
-                  widget.videoJsController.playerId,
-                  getVideoJsOptions(widget.videoJsController.videoJsOptions))
+                widget.videoJsController.playerId,
+                getVideoJsOptions(widget.videoJsController.videoJsOptions),
+              )
           ];
         return htmlElement;
       });

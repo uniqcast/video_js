@@ -1,8 +1,11 @@
 class VideoJsScripts {
-  String videojsCode(String playerId, Map<String, dynamic>? options) => """
+  String videojsCode(String playerId, Map<String, dynamic>? options) {
+    // print("videojsCode -> ${options}");
+    return """
     var player = videojs('$playerId', ${options},function() {
     callBackToDartSide('$playerId', 'onReady' , 'true');
     });""";
+  }
 
   String globalAutoSetup(bool status) => """
     videojs.options.autoSetup = '$status';""";
@@ -35,9 +38,32 @@ class VideoJsScripts {
   // String isDispose(String playerId) => """
   //   '$playerId'.isDisposed();""";
 
-  String setSRCCode(String playerId, String src, String type) => """
+  String setSRCCode(String playerId, String src, String type, Map? keySystems) {
+    // If keySystems is not null, we assume that we need to add DRM properties
+    if (keySystems != null) {
+      return """
+    
     var player = videojs('$playerId');
-    player.src({type: '$type', src: '$src'});""";
+    player.eme();
+    player.src({
+      type: '$type', 
+      src: '$src', 
+      keySystems: $keySystems
+    });
+    
+    """;
+    } else {
+      return """
+    
+    var player = videojs('$playerId');
+    player.src({
+      type: '$type', 
+      src: '$src', 
+    });
+    
+    """;
+    }
+  }
 
   //Array of Source Objects: To provide multiple versions of the source so that it can be played
   //using HTML5 across browsers you can use an array of source objects. Video.js will detect which

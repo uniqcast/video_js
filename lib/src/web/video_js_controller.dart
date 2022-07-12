@@ -15,7 +15,7 @@ class VideoJsController {
     final html.Element scriptElement = html.ScriptElement()
       ..id = "videojs"
       ..innerHtml =
-          VideoJsScripts().videojsCode(playerId, videoJsOptions!.toJson());
+          VideoJsScripts().videojsCode(playerId, videoJsOptions?.toJson());
     html.Element? ele = html.querySelector("#videojs");
     if (html.querySelector("#videojs") != null) {
       ele!.remove();
@@ -26,10 +26,11 @@ class VideoJsController {
 
   /// to set video source by type
   /// [type] can be video/mp4, video/webm, application/x-mpegURL (for hls videos), ...
-  setSRC(String src, {required String type}) {
+  setSRC(String src, {required String type, Map? keySystems}) {
     final html.Element scriptElement = html.ScriptElement()
       ..id = "setSRC"
-      ..innerHtml = VideoJsScripts().setSRCCode(playerId, src, type);
+      ..innerHtml =
+          VideoJsScripts().setSRCCode(playerId, src, type, keySystems);
     html.Element? ele = html.querySelector("#setSRC");
     if (html.querySelector("#setSRC") != null) {
       ele!.remove();
