@@ -1,23 +1,68 @@
 import 'dart:html' as html;
+import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:video_js/src/models/videoJs_options.dart';
-import 'package:video_js/src/web/video_results.dart';
 import 'package:video_js/src/web/video_js_scripts.dart';
+import 'package:video_js/src/web/video_results.dart';
 
 class VideoJsController {
   final String playerId;
   final VideoJsOptions? videoJsOptions;
+  late String textureId;
+  late html.Element playerElement;
 
-  VideoJsController(this.playerId, {this.videoJsOptions});
+  VideoJsController(this.playerId, {this.videoJsOptions}) {
+    final html.Element? ele = html.querySelector('#divId');
+    if (html.querySelector('#divId') != null) {
+      ele!.remove();
+    }
+
+    textureId = _generateRandomString(7);
+    playerElement = html.DivElement()
+      ..id = 'videoElement-$textureId'
+      ..style.width = '100%'
+      ..style.height = '100%'
+      ..children = [
+        html.VideoElement()
+          ..id = playerId
+          ..style.minHeight = '100%'
+          ..style.minHeight = '100%'
+          ..style.width = '100%'
+          //..style.height = "auto"
+          ..className = 'video-js vjs-theme-city',
+        html.ScriptElement()
+          ..innerHtml = VideoJsScripts().videojsCode(
+            playerId,
+            _getVideoJsOptions(videoJsOptions),
+          )
+      ];
+
+    // ignore: undefined_prefixed_name
+    ui.platformViewRegistry
+        .registerViewFactory(textureId, (int id) => playerElement);
+  }
+
+  Map<String, dynamic> _getVideoJsOptions(VideoJsOptions? videoJsOptions) {
+    return videoJsOptions != null ? videoJsOptions.toJson() : {};
+  }
+
+  /// To generate random string for HtmlElementView ID
+  String _generateRandomString(int len) {
+    final r = Random();
+    const chars =
+        'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    return List.generate(len, (index) => chars[r.nextInt(chars.length)]).join();
+  }
 
   /// This function is for initial a video.js instance with options
   videoJs(Function(String) onReady, {VideoJsOptions? videoJsOptions}) {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "videojs"
+      ..id = 'videojs'
       ..innerHtml =
           VideoJsScripts().videojsCode(playerId, videoJsOptions?.toJson());
-    html.Element? ele = html.querySelector("#videojs");
-    if (html.querySelector("#videojs") != null) {
+    final html.Element? ele = html.querySelector('#videojs');
+    if (html.querySelector('#videojs') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -28,11 +73,11 @@ class VideoJsController {
   /// [type] can be video/mp4, video/webm, application/x-mpegURL (for hls videos), ...
   setSRC(String src, {required String type, Map? keySystems}) {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "setSRC"
+      ..id = 'setSRC'
       ..innerHtml =
           VideoJsScripts().setSRCCode(playerId, src, type, keySystems);
-    html.Element? ele = html.querySelector("#setSRC");
-    if (html.querySelector("#setSRC") != null) {
+    final html.Element? ele = html.querySelector('#setSRC');
+    if (html.querySelector('#setSRC') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -41,10 +86,10 @@ class VideoJsController {
   /// To get volume of video
   getVolume(Function(String) onVolumeRecive) {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "getVolume"
+      ..id = 'getVolume'
       ..innerHtml = VideoJsScripts().getVolume(playerId);
-    html.Element? ele = html.querySelector("#getVolume");
-    if (html.querySelector("#getVolume") != null) {
+    final html.Element? ele = html.querySelector('#getVolume');
+    if (html.querySelector('#getVolume') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -54,10 +99,10 @@ class VideoJsController {
   /// set volume to video player
   setVolume(String volume) {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "setVolume"
+      ..id = 'setVolume'
       ..innerHtml = VideoJsScripts().setVolume(playerId, volume);
-    html.Element? ele = html.querySelector("#setVolume");
-    if (html.querySelector("#setVolume") != null) {
+    final html.Element? ele = html.querySelector('#setVolume');
+    if (html.querySelector('#setVolume') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -66,10 +111,10 @@ class VideoJsController {
   /// toggle mute in video player. if player is mute, makes unmute and if is unmute makes mute
   toggleMute() {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "toggleMute"
+      ..id = 'toggleMute'
       ..innerHtml = VideoJsScripts().toggleMute(playerId);
-    html.Element? ele = html.querySelector("#toggleMute");
-    if (html.querySelector("#toggleMute") != null) {
+    final html.Element? ele = html.querySelector('#toggleMute');
+    if (html.querySelector('#toggleMute') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -78,10 +123,10 @@ class VideoJsController {
   /// this function is for check video player mute status
   isMute(Function(String) onMuteStatus) {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "isMute"
+      ..id = 'isMute'
       ..innerHtml = VideoJsScripts().isMute(playerId);
-    html.Element? ele = html.querySelector("#isMute");
-    if (html.querySelector("#isMute") != null) {
+    final html.Element? ele = html.querySelector('#isMute');
+    if (html.querySelector('#isMute') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -92,10 +137,10 @@ class VideoJsController {
   /// this function just change type
   toggleFullScreen() {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "toggleFullScreen"
+      ..id = 'toggleFullScreen'
       ..innerHtml = VideoJsScripts().toggleFullScreenMode(playerId);
-    html.Element? ele = html.querySelector("#toggleFullScreen");
-    if (html.querySelector("#toggleFullScreen") != null) {
+    final html.Element? ele = html.querySelector('#toggleFullScreen');
+    if (html.querySelector('#toggleFullScreen') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -104,10 +149,10 @@ class VideoJsController {
   /// this function is for check video player full screen status
   isFullScreen(Function(String) onFullScreenStatus) {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "isFullScreen"
+      ..id = 'isFullScreen'
       ..innerHtml = VideoJsScripts().isFullScreen(playerId);
-    html.Element? ele = html.querySelector("#isFullScreen");
-    if (html.querySelector("#isFullScreen") != null) {
+    final html.Element? ele = html.querySelector('#isFullScreen');
+    if (html.querySelector('#isFullScreen') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -118,10 +163,10 @@ class VideoJsController {
   /// To change player to full screen mode
   requestFullScreen() {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "requestFullScreen"
+      ..id = 'requestFullScreen'
       ..innerHtml = VideoJsScripts().requestFullscreen(playerId);
-    html.Element? ele = html.querySelector("#requestFullScreen");
-    if (html.querySelector("#requestFullScreen") != null) {
+    final html.Element? ele = html.querySelector('#requestFullScreen');
+    if (html.querySelector('#requestFullScreen') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -130,10 +175,10 @@ class VideoJsController {
   /// To exit from full screen mode
   exitFullScreen() {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "exiteFullScreen"
+      ..id = 'exiteFullScreen'
       ..innerHtml = VideoJsScripts().exitFullscreen(playerId);
-    html.Element? ele = html.querySelector("#exiteFullScreen");
-    if (html.querySelector("#exiteFullScreen") != null) {
+    final html.Element? ele = html.querySelector('#exiteFullScreen');
+    if (html.querySelector('#exiteFullScreen') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -142,10 +187,10 @@ class VideoJsController {
   /// play video
   play() {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "play"
+      ..id = 'play'
       ..innerHtml = VideoJsScripts().play(playerId);
-    html.Element? ele = html.querySelector("#play");
-    if (html.querySelector("#play") != null) {
+    final html.Element? ele = html.querySelector('#play');
+    if (html.querySelector('#play') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -154,10 +199,10 @@ class VideoJsController {
   /// pause video
   pause() {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "pause"
+      ..id = 'pause'
       ..innerHtml = VideoJsScripts().pause(playerId);
-    html.Element? ele = html.querySelector("#pause");
-    if (html.querySelector("#pause") != null) {
+    final html.Element? ele = html.querySelector('#pause');
+    if (html.querySelector('#pause') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -166,10 +211,10 @@ class VideoJsController {
   /// To check video player pause status
   isPaused(Function(String) onPauseStatus) {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "isPaused"
+      ..id = 'isPaused'
       ..innerHtml = VideoJsScripts().isPause(playerId);
-    html.Element? ele = html.querySelector("#isPaused");
-    if (html.querySelector("#isPaused") != null) {
+    final html.Element? ele = html.querySelector('#isPaused');
+    if (html.querySelector('#isPaused') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -179,10 +224,10 @@ class VideoJsController {
   /// To get video's current playing time in seconds
   currentTime(Function(String) onCurrentTime) {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "currentTime"
+      ..id = 'currentTime'
       ..innerHtml = VideoJsScripts().getCurrentTime(playerId);
-    html.Element? ele = html.querySelector("#currentTime");
-    if (html.querySelector("#currentTime") != null) {
+    final html.Element? ele = html.querySelector('#currentTime');
+    if (html.querySelector('#currentTime') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -190,12 +235,12 @@ class VideoJsController {
   }
 
   /// Set video
-  setCurrentTime(String CurrentTime) {
+  setCurrentTime(String currentTime) {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "setCurrentTime"
-      ..innerHtml = VideoJsScripts().setCurrentTime(playerId, CurrentTime);
-    html.Element? ele = html.querySelector("#setCurrentTime");
-    if (html.querySelector("#setCurrentTime") != null) {
+      ..id = 'setCurrentTime'
+      ..innerHtml = VideoJsScripts().setCurrentTime(playerId, currentTime);
+    final html.Element? ele = html.querySelector('#setCurrentTime');
+    if (html.querySelector('#setCurrentTime') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -204,10 +249,10 @@ class VideoJsController {
   /// Video whole time in seconds
   durationTime(Function(String) onDurationTime) {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "durationTime"
+      ..id = 'durationTime'
       ..innerHtml = VideoJsScripts().duration(playerId);
-    html.Element? ele = html.querySelector("#durationTime");
-    if (html.querySelector("#durationTime") != null) {
+    final html.Element? ele = html.querySelector('#durationTime');
+    if (html.querySelector('#durationTime') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -218,10 +263,10 @@ class VideoJsController {
   /// Video remain time in seconds
   remainTime(Function(String) onRemainTime) {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "onRemainTime"
+      ..id = 'onRemainTime'
       ..innerHtml = VideoJsScripts().remainingTime(playerId);
-    html.Element? ele = html.querySelector("#onRemainTime");
-    if (html.querySelector("#onRemainTime") != null) {
+    final html.Element? ele = html.querySelector('#onRemainTime');
+    if (html.querySelector('#onRemainTime') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -232,10 +277,10 @@ class VideoJsController {
   /// Video buffered ( downloaded ) percent
   bufferPercent(Function(String) onBufferPercent) {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "bufferPercent"
+      ..id = 'bufferPercent'
       ..innerHtml = VideoJsScripts().bufferedPercent(playerId);
-    html.Element? ele = html.querySelector("#bufferPercent");
-    if (html.querySelector("#bufferPercent") != null) {
+    final html.Element? ele = html.querySelector('#bufferPercent');
+    if (html.querySelector('#bufferPercent') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -246,10 +291,10 @@ class VideoJsController {
   /// Set Video poster/thumbnail
   setPoster(String poster) {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "setPoster"
+      ..id = 'setPoster'
       ..innerHtml = VideoJsScripts().setPoster(playerId, poster);
-    html.Element? ele = html.querySelector("#setPoster");
-    if (html.querySelector("#setPoster") != null) {
+    final html.Element? ele = html.querySelector('#setPoster');
+    if (html.querySelector('#setPoster') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -258,10 +303,10 @@ class VideoJsController {
   /// Get Video poster/thumbnail
   getPoster(Function(String) onPosterGet) {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "getPoster"
+      ..id = 'getPoster'
       ..innerHtml = VideoJsScripts().getPoster(playerId);
-    html.Element? ele = html.querySelector("#getPoster");
-    if (html.querySelector("#getPoster") != null) {
+    final html.Element? ele = html.querySelector('#getPoster');
+    if (html.querySelector('#getPoster') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -271,10 +316,10 @@ class VideoJsController {
   /// Get Video poster/thumbnail
   onPlayerReady(Function(String) onReady) {
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "onPlayerReady"
+      ..id = 'onPlayerReady'
       ..innerHtml = VideoJsScripts().getPoster(playerId);
-    html.Element? ele = html.querySelector("#onPlayerReady");
-    if (html.querySelector("#onPlayerReady") != null) {
+    final html.Element? ele = html.querySelector('#onPlayerReady');
+    if (html.querySelector('#onPlayerReady') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
@@ -284,11 +329,16 @@ class VideoJsController {
   /// This method is available on all Video.js players and components.
   /// It is the only supported method of removing a Video.js player from both the DOM and memory.
   dispose() {
+    final html.Element? playerElement = html.querySelector('#divId');
+    if (html.querySelector('#divId') != null) {
+      playerElement!.remove();
+    }
+
     final html.Element scriptElement = html.ScriptElement()
-      ..id = "dispose"
+      ..id = 'dispose'
       ..innerHtml = VideoJsScripts().dispose(playerId);
-    html.Element? ele = html.querySelector("#dispose");
-    if (html.querySelector("#dispose") != null) {
+    final html.Element? ele = html.querySelector('#dispose');
+    if (html.querySelector('#dispose') != null) {
       ele!.remove();
     }
     html.querySelector('body')!.children.add(scriptElement);
