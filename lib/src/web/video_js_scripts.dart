@@ -2,7 +2,7 @@ class VideoJsScripts {
   String videojsCode(String playerId, Map<String, dynamic>? options) {
     // print("videojsCode -> ${options}");
     return """
-    var player = videojs('$playerId', ${options},function() {
+    var player = videojs('$playerId', $options,function() {
     callBackToDartSide('$playerId', 'onReady' , 'true');
     });""";
   }

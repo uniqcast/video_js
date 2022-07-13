@@ -10,10 +10,10 @@ class Source {
   Source({required this.src, required this.type, this.keySystems});
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['src'] = "\"${this.src}\"";
-    data['type'] = "\"${this.type}\"";
-    data['keySystems'] = this.keySystems;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['src'] = '"$src"';
+    data['type'] = '"$type"';
+    data['keySystems'] = keySystems;
     return data;
   }
 }
