@@ -1,14 +1,60 @@
 import 'dart:html' as html;
+import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:video_js/src/models/videoJs_options.dart';
-import 'package:video_js/src/web/video_results.dart';
 import 'package:video_js/src/web/video_js_scripts.dart';
+import 'package:video_js/src/web/video_results.dart';
 
 class VideoJsController {
   final String playerId;
   final VideoJsOptions? videoJsOptions;
+  late String textureId;
+  late html.Element playerElement;
 
-  VideoJsController(this.playerId, {this.videoJsOptions});
+  VideoJsController(this.playerId, {this.videoJsOptions}) {
+    html.Element? ele = html.querySelector("#divId");
+    if (html.querySelector("#divId") != null) {
+      ele!.remove();
+    }
+
+    textureId = _generateRandomString(7);
+    playerElement = html.DivElement()
+      ..id = 'videoElement-$textureId'
+      ..style.width = '100%'
+      ..style.height = '100%'
+      ..children = [
+        html.VideoElement()
+          ..id = playerId
+          ..style.minHeight = "100%"
+          ..style.minHeight = "100%"
+          ..style.width = "100%"
+          //..style.height = "auto"
+          ..className = "video-js vjs-theme-city",
+        html.ScriptElement()
+          ..innerHtml = VideoJsScripts().videojsCode(
+            playerId,
+            _getVideoJsOptions(videoJsOptions),
+          )
+      ];
+
+    // ignore: undefined_prefixed_name
+    ui.platformViewRegistry
+        .registerViewFactory(textureId, (int id) => playerElement);
+  }
+
+  Map<String, dynamic> _getVideoJsOptions(VideoJsOptions? videoJsOptions) {
+    return videoJsOptions != null ? videoJsOptions.toJson() : {};
+  }
+
+  /// To generate random string for HtmlElementView ID
+  String _generateRandomString(int len) {
+    var r = Random();
+    const _chars =
+        'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    return List.generate(len, (index) => _chars[r.nextInt(_chars.length)])
+        .join();
+  }
 
   /// This function is for initial a video.js instance with options
   videoJs(Function(String) onReady, {VideoJsOptions? videoJsOptions}) {
@@ -284,6 +330,11 @@ class VideoJsController {
   /// This method is available on all Video.js players and components.
   /// It is the only supported method of removing a Video.js player from both the DOM and memory.
   dispose() {
+    html.Element? playerElement = html.querySelector("#divId");
+    if (html.querySelector("#divId") != null) {
+      playerElement!.remove();
+    }
+
     final html.Element scriptElement = html.ScriptElement()
       ..id = "dispose"
       ..innerHtml = VideoJsScripts().dispose(playerId);
