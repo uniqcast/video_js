@@ -71,11 +71,32 @@ class VideoJsController {
 
   /// to set video source by type
   /// [type] can be video/mp4, video/webm, application/x-mpegURL (for hls videos), ...
-  setSRC(String src, {required String type, Map? keySystems}) {
+  setSRC(
+    String src, {
+    required String type,
+    Map<String, dynamic>? keySystems,
+    Map<String, String>? emeHeaders,
+  }) {
+    {
+      final html.Element scriptElement = html.ScriptElement()
+        ..id = 'setupDrm'
+        ..innerHtml = VideoJsScripts().setupDrm(playerId);
+      final html.Element? ele = html.querySelector('#setupDrm');
+      if (html.querySelector('#setupDrm') != null) {
+        ele!.remove();
+      }
+      html.querySelector('body')!.children.add(scriptElement);
+    }
+    final jsCode = VideoJsScripts().setSRCCode(
+      playerId,
+      src: src,
+      type: type,
+      keySystems: keySystems,
+      emeHeaders: emeHeaders,
+    );
     final html.Element scriptElement = html.ScriptElement()
       ..id = 'setSRC'
-      ..innerHtml =
-          VideoJsScripts().setSRCCode(playerId, src, type, keySystems);
+      ..innerHtml = jsCode;
     final html.Element? ele = html.querySelector('#setSRC');
     if (html.querySelector('#setSRC') != null) {
       ele!.remove();
