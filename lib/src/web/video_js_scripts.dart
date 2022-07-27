@@ -1,10 +1,13 @@
+import 'dart:convert';
+
 class VideoJsScripts {
   String videojsCode(String playerId, Map<String, dynamic>? options) {
     // print("videojsCode -> ${options}");
     return """
     var player = videojs('$playerId', $options,function() {
     callBackToDartSide('$playerId', 'onReady' , 'true');
-    });""";
+    });
+    """;
   }
 
   String globalAutoSetup(bool status) => """
@@ -38,32 +41,24 @@ class VideoJsScripts {
   // String isDispose(String playerId) => """
   //   '$playerId'.isDisposed();""";
 
-  String setSRCCode(String playerId, String src, String type, Map? keySystems) {
-    // If keySystems is not null, we assume that we need to add DRM properties
-    if (keySystems != null) {
-      return """
-    
-    var player = videojs('$playerId');
-    player.eme();
-    player.src({
-      type: '$type', 
-      src: '$src', 
-      keySystems: $keySystems
-    });
-    
-    """;
-    } else {
-      return """
+  String setSRCCode(
+    String playerId, {
+    required String src,
+    required String type,
+    Map<String, dynamic>? keySystems,
+    Map<String, String>? emeHeaders,
+  }) =>
+      """
     
     var player = videojs('$playerId');
     player.src({
       type: '$type', 
       src: '$src', 
+      ${keySystems != null ? 'keySystems: ${jsonEncode(keySystems)},' : ''}
+      ${emeHeaders != null ? 'emeHeaders: ${jsonEncode(emeHeaders)},' : ''}
     });
     
     """;
-    }
-  }
 
   //Array of Source Objects: To provide multiple versions of the source so that it can be played
   //using HTML5 across browsers you can use an array of source objects. Video.js will detect which
@@ -75,6 +70,11 @@ class VideoJsScripts {
   //     {type: 'video/webm', src: 'http://www.example.com/path/to/video.webm'},
   //     {type: 'video/ogg', src: 'http://www.example.com/path/to/video.ogv'}
   //   ]);    """;
+
+  String setupDrm(String playerId) => """
+    var player = videojs.getPlayer('$playerId');
+    player.eme();
+    """;
 
   //volume 0 until 1
   String getVolume(String playerId) => """
