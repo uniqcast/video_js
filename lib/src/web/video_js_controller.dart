@@ -6,21 +6,23 @@ import 'package:video_js/src/models/videoJs_options.dart';
 import 'package:video_js/src/web/video_js_scripts.dart';
 import 'package:video_js/src/web/video_results.dart';
 
+const videoJsWrapperId = '#videoJsWrapper';
+
 class VideoJsController {
   final String playerId;
   final VideoJsOptions? videoJsOptions;
   late String textureId;
-  late html.Element playerElement;
+  late html.DivElement playerWrapperElement;
 
   VideoJsController(this.playerId, {this.videoJsOptions}) {
-    final html.Element? ele = html.querySelector('#divId');
-    if (html.querySelector('#divId') != null) {
+    final html.Element? ele = html.querySelector(videoJsWrapperId);
+    if (html.querySelector(videoJsWrapperId) != null) {
       ele!.remove();
     }
 
     textureId = _generateRandomString(7);
-    playerElement = html.DivElement()
-      ..id = 'videoElement-$textureId'
+    playerWrapperElement = html.DivElement()
+      ..id = videoJsWrapperId
       ..style.width = '100%'
       ..style.height = '100%'
       ..children = [
@@ -40,7 +42,7 @@ class VideoJsController {
 
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry
-        .registerViewFactory(textureId, (int id) => playerElement);
+        .registerViewFactory(textureId, (int id) => playerWrapperElement);
   }
 
   Map<String, dynamic> _getVideoJsOptions(VideoJsOptions? videoJsOptions) {
@@ -350,8 +352,8 @@ class VideoJsController {
   /// This method is available on all Video.js players and components.
   /// It is the only supported method of removing a Video.js player from both the DOM and memory.
   dispose() {
-    final html.Element? playerElement = html.querySelector('#divId');
-    if (html.querySelector('#divId') != null) {
+    final html.Element? playerElement = html.querySelector(videoJsWrapperId);
+    if (html.querySelector(videoJsWrapperId) != null) {
       playerElement!.remove();
     }
 
