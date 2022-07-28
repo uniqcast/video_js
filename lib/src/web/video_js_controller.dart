@@ -182,6 +182,14 @@ class VideoJsController {
     VideoJsResults().listenToValueFromJs(playerId, 'isPaused', onPauseStatus);
   }
 
+  onEnd(Function(String) onEnd) {
+    replaceScriptElement(
+      'onEnd',
+      VideoJsScripts().onEnd(playerId),
+    );
+    VideoJsResults().listenToValueFromJs(playerId, 'onEnd', onEnd);
+  }
+
   /// To get video's current playing time in seconds
   currentTime(Function(String) onCurrentTime) {
     replaceScriptElement(
