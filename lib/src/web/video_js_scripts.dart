@@ -7,6 +7,9 @@ class VideoJsScripts {
     var player = videojs('$playerId', $options,function() {
     callBackToDartSide('$playerId', 'onReady' , 'true');
     });
+    player.on('ended', function() {
+    callBackToDartSide('$playerId', 'onEnd' , 'true');
+    });
     """;
   }
 
