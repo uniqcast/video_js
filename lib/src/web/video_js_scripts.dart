@@ -51,16 +51,28 @@ class VideoJsScripts {
     Map<String, dynamic>? keySystems,
     Map<String, String>? emeHeaders,
   }) =>
-      """
-    
+      """ 
     var player = videojs('$playerId');
     player.src({
       type: '$type', 
       src: '$src', 
       ${keySystems != null ? 'keySystems: ${jsonEncode(keySystems)},' : ''}
       ${emeHeaders != null ? 'emeHeaders: ${jsonEncode(emeHeaders)},' : ''}
+    });   
+    player.ready(function(){
+      if (player.readyState() < 1) {
+        // wait for loadedmetdata event
+        player.one("loadedmetadata", onLoadedMetadata);
+    }
+    else {
+        // metadata already loaded
+        onLoadedMetadata();
+    }
+        
+    function onLoadedMetadata() {
+        callBackToDartSide('$playerId', 'onReady' , player.duration());
+    }
     });
-    
     """;
 
   //Array of Source Objects: To provide multiple versions of the source so that it can be played
