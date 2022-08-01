@@ -60,18 +60,9 @@ class VideoJsScripts {
       ${emeHeaders != null ? 'emeHeaders: ${jsonEncode(emeHeaders)},' : ''}
     });   
     player.ready(function(){
-      if (player.readyState() < 1) {
-        // wait for loadedmetdata event
-        player.one("loadedmetadata", onLoadedMetadata);
-    }
-    else {
-        // metadata already loaded
-        onLoadedMetadata();
-    }
-        
-    function onLoadedMetadata() {
+        player.one("loadedmetadata",function() {
         callBackToDartSide('$playerId', 'onReady' , player.duration());
-    }
+        });
     });
     """;
 
@@ -179,18 +170,12 @@ class VideoJsScripts {
   String duration(String playerId) => """
   var player = videojs('$playerId');
 
-    if (player.readyState() < 1) {
-        // wait for loadedmetdata event
-        player.one("loadedmetadata", onLoadedMetadata);
-    }
-    else {
-        // metadata already loaded
-        onLoadedMetadata();
-    }
-        
-    function onLoadedMetadata() {
-        callBackToDartSide('$playerId', 'getDuration' , player.duration());
-    }""";
+     player.ready(function(){
+        player.one("loadedmetadata",function() {
+        callBackToDartSide('$playerId', 'onReady' , player.duration());
+        });
+    });
+    """;
 
   String remainingTime(String playerId) => """
     var player = videojs.getPlayer('$playerId');
