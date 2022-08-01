@@ -165,11 +165,20 @@ class VideoJsScripts {
     });""";
 
   String duration(String playerId) => """
-    var player = videojs.getPlayer('$playerId');
-    player.ready(function() {
-    var lengthOfVideo = player.duration();
-    callBackToDartSide('$playerId', 'getDuration' , lengthOfVideo);
-    });""";
+  var player = videojs('$playerId');
+
+    if (player.readyState() < 1) {
+        // wait for loadedmetdata event
+        player.one("loadedmetadata", onLoadedMetadata);
+    }
+    else {
+        // metadata already loaded
+        onLoadedMetadata();
+    }
+        
+    function onLoadedMetadata() {
+        callBackToDartSide('$playerId', 'getDuration' , player.duration());
+    }""";
 
   String remainingTime(String playerId) => """
     var player = videojs.getPlayer('$playerId');
