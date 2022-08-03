@@ -169,10 +169,9 @@ class VideoJsScripts {
 
   String duration(String playerId) => """
   var player = videojs('$playerId');
-
      player.ready(function(){
         player.one("loadedmetadata",function() {
-        callBackToDartSide('$playerId', 'onReady' , player.duration());
+        callBackToDartSide('$playerId', 'getDuration' , player.duration());
         });
     });
     """;
