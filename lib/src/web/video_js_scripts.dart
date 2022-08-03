@@ -51,16 +51,19 @@ class VideoJsScripts {
     Map<String, dynamic>? keySystems,
     Map<String, String>? emeHeaders,
   }) =>
-      """
-    
+      """ 
     var player = videojs('$playerId');
     player.src({
       type: '$type', 
       src: '$src', 
       ${keySystems != null ? 'keySystems: ${jsonEncode(keySystems)},' : ''}
       ${emeHeaders != null ? 'emeHeaders: ${jsonEncode(emeHeaders)},' : ''}
+    });   
+    player.ready(function(){
+        player.one("loadedmetadata",function() {
+        callBackToDartSide('$playerId', 'onReady' , player.duration());
+        });
     });
-    
     """;
 
   //Array of Source Objects: To provide multiple versions of the source so that it can be played
@@ -165,11 +168,13 @@ class VideoJsScripts {
     });""";
 
   String duration(String playerId) => """
-    var player = videojs.getPlayer('$playerId');
-    player.ready(function() {
-    var lengthOfVideo = player.duration();
-    callBackToDartSide('$playerId', 'getDuration' , lengthOfVideo);
-    });""";
+  var player = videojs('$playerId');
+     player.ready(function(){
+        player.one("loadedmetadata",function() {
+        callBackToDartSide('$playerId', 'getDuration' , player.duration());
+        });
+    });
+    """;
 
   String remainingTime(String playerId) => """
     var player = videojs.getPlayer('$playerId');
