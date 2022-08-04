@@ -263,6 +263,13 @@ class VideoJsController {
     VideoJsResults().listenToValueFromJs(playerId, 'onReady', onReady);
   }
 
+  setAudioTrack(String index) {
+    replaceScriptElement(
+      'setAudioTrack',
+      VideoJsScripts().setAudioTrack(playerId, index),
+    );
+  }
+
   /// This method is available on all Video.js players and components.
   /// It is the only supported method of removing a Video.js player from both the DOM and memory.
   dispose() {

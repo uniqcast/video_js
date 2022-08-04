@@ -202,4 +202,9 @@ class VideoJsScripts {
     var value = player.poster();
     callBackToDartSide('$playerId', 'getPoster', value);
     });""";
+
+  String setAudioTrack(String playerId, String index) => """
+    var player = videojs.getPlayer('$playerId');
+    var audioTrackList = player.audioTracks();
+    audioTrackList[$index].enabled = true;""";
 }
