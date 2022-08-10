@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:js';
 
 import 'package:video_js/src/models/result_from_video_js.dart';
 
@@ -18,17 +17,14 @@ class VideoJsResults {
     return _instance;
   }
 
-  /// this function need to call on app's main method to register call back's from javascript side
-  init() {
-    context['callBackToDartSide'] = (playerId, type, value) {
-      _onVolumeFromJsStream.sink.add(
-        ResultFromVideoJs(
-          playerId.toString(),
-          type.toString(),
-          value.toString(),
-        ),
-      );
-    };
+  addEvent(String playerId, String type, dynamic value) {
+    _onVolumeFromJsStream.sink.add(
+      ResultFromVideoJs(
+        playerId,
+        type.toString(),
+        value.toString(),
+      ),
+    );
   }
 
   /// this function listening to every call back from javascript type
