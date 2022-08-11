@@ -36,6 +36,7 @@ class VideoJsController {
           //..style.height = "auto"
           ..className = 'video-js vjs-theme-city',
       ];
+
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry
         .registerViewFactory(textureId, (int id) => playerWrapperElement);
@@ -46,11 +47,11 @@ class VideoJsController {
     player.on('ended', ([arg1, arg2]) {
       VideoJsResults().addEvent(playerId, 'onEnd', true);
     });
-    try {
-      player.eme();
-    } catch (e) {
-      print(e);
-    }
+    // try {
+    //   player.eme();
+    // } catch (e) {
+    //   print(e);
+    // }
   }
 
   /// To generate random string for HtmlElementView ID
@@ -104,12 +105,6 @@ class VideoJsController {
     final completer = Completer<void>();
 
     final player = await getPlayer();
-    // TODO: correct DRM initialization
-    // try {
-    //   player.eme();
-    // } catch (e) {
-    //   print(e);
-    // }
 
     player.src(
       Source(
@@ -123,7 +118,7 @@ class VideoJsController {
     player.one(
       'loadedmetadata',
       allowInterop(([arg1, arg2]) {
-        VideoJsResults().addEvent(playerId, 'onReady', player.duration());
+        VideoJsResults().addEvent(playerId, 'initialized', player.duration());
         completer.complete();
       }),
     );
@@ -155,8 +150,9 @@ class VideoJsController {
   }
 
   /// Set video
-  setCurrentTime(String currentTime) {
-    // TODO same method name
+  setCurrentTime(num value) async {
+    final player = await getPlayer();
+    return player.currentTime(value.toInt());
   }
 
   Future<void> setAudioTrack(String index) async {

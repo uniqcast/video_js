@@ -21,7 +21,7 @@ class VideoJsResults {
     _onVolumeFromJsStream.sink.add(
       ResultFromVideoJs(
         playerId,
-        type.toString(),
+        type,
         value.toString(),
       ),
     );
