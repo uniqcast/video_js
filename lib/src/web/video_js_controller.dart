@@ -43,15 +43,15 @@ class VideoJsController {
   }
 
   Future<void> init() async {
-    final player = await initPlayer();
-    player.on('ended', ([arg1, arg2]) {
-      VideoJsResults().addEvent(playerId, 'onEnd', true);
-    });
-    // try {
-    //   player.eme();
-    // } catch (e) {
-    //   print(e);
-    // }
+    try {
+      final player = await initPlayer();
+      player.on('ended', ([arg1, arg2]) {
+        VideoJsResults().addEvent(playerId, 'onEnd', true);
+      });
+      player.eme();
+    } catch (e) {
+      print(e);
+    }
   }
 
   /// To generate random string for HtmlElementView ID
