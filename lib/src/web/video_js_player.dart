@@ -212,7 +212,7 @@ class Player {
   /// @return - the current time in seconds when getting
   // external void currentTime(num seconds): void;
 
-  external num currentTime();
+  external num currentTime([num value]);
 
   /// Get the {@link AudioTrackList}
   ///
