@@ -186,9 +186,7 @@ class Player {
   ///        The duration of the video to set in seconds
   ///
   /// @return - The duration of the video in seconds when getting
-  external num duration();
-
-  //external num duration(num value);
+  external num duration([num seconds]);
 
   /// Get or set the current volume of the media
   ///
@@ -199,10 +197,7 @@ class Player {
   ///         - 0.5 is half volume or 50%
   ///
   /// @return The current volume as a percent when getting
-
-  //external number volume();
-
-  external html.TimeRanges volume(double percentAsDecimal);
+  external html.TimeRanges volume([double percentAsDecimal]);
 
   /// Get or set the current time (in seconds)
   ///
@@ -219,7 +214,7 @@ class Player {
   /// @return Tech.prototype.audioTracks
   // external List<AudioTrack> audioTracks();
   // TODO: strictly typed tracks
-  external dynamic audioTracks();
+  external List<dynamic> audioTracks();
 
   /// Get or set the video source.
   ///
@@ -236,7 +231,6 @@ class Player {
   // @JS('src')
   // external void src(String source);
 
-  @JS('src')
   external void src(Source source);
 
   external void eme();
@@ -245,7 +239,7 @@ class Player {
   ///
   /// @return
   ///         If the component has been disposed, will be `true`. Otherwise, `false`.
-  external bool isDisposed();
+  // external bool isDisposed();
 
   /// Dispose of the `Component` and all child components.
   ///

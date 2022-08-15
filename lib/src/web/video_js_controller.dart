@@ -45,9 +45,9 @@ class VideoJsController {
   Future<void> init() async {
     try {
       final player = await initPlayer();
-      player.on('ended', ([arg1, arg2]) {
+      player.on('ended', allowInterop(([arg1, arg2]) {
         VideoJsResults().addEvent(playerId, 'onEnd', true);
-      });
+      }));
       player.eme();
     } catch (e) {
       print(e);
