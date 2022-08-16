@@ -165,6 +165,12 @@ class Player {
   /// @return A reference to the player object this function was called on
   external Player pause();
 
+  /// Check if the player is paused or has yet to play
+  ///
+  /// @return - false: if the media is currently playing
+  ///         - true: if media is not currently playing
+  external bool paused;
+
   /// Attempt to begin playback at the first opportunity.
   /// @check
   /// @return Returns a `Promise` only if the browser returns one and the player

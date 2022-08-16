@@ -45,9 +45,24 @@ class VideoJsController {
   Future<void> init() async {
     try {
       final player = await initPlayer();
-      player.on('ended', allowInterop(([arg1, arg2]) {
-        VideoJsResults().addEvent(playerId, 'onEnd', true);
-      }));
+      player.on(
+        'ended',
+        allowInterop(([arg1, arg2]) {
+          VideoJsResults().addEvent(playerId, 'onEnd', true);
+        }),
+      );
+      player.on(
+        'play',
+        allowInterop(([arg1, arg2]) {
+          VideoJsResults().addEvent(playerId, 'play', true);
+        }),
+      );
+      player.on(
+        'pause',
+        allowInterop(([arg1, arg2]) {
+          VideoJsResults().addEvent(playerId, 'pause', true);
+        }),
+      );
       player.eme();
     } catch (e) {
       print(e);
@@ -134,13 +149,15 @@ class VideoJsController {
   /// play video
   play() async {
     final player = await getPlayer();
-    player.play();
+    if (player.paused) {
+      return player.play();
+    }
   }
 
   /// pause video
   pause() async {
     final player = await getPlayer();
-    player.pause();
+    return player.pause();
   }
 
   /// To get video's current playing time in seconds
