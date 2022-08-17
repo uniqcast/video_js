@@ -169,7 +169,7 @@ class Player {
   ///
   /// @return - false: if the media is currently playing
   ///         - true: if media is not currently playing
-  external bool paused;
+  external bool paused();
 
   /// Attempt to begin playback at the first opportunity.
   /// @check
@@ -221,6 +221,15 @@ class Player {
   // external List<AudioTrack> audioTracks();
   // TODO: strictly typed tracks
   external List<dynamic> audioTracks();
+
+  /// Get a TimeRange object with an array of the times of the video
+  /// that have been downloaded. If you just want the percent of the
+  /// video that's been downloaded, use bufferedPercent.
+  ///
+  /// @see [Buffered Spec]{@link http://dev.w3.org/html5/spec/video.html#dom-media-buffered}
+  ///
+  /// @return A mock TimeRange object (following HTML spec)
+  external TimeRange buffered();
 
   /// Get or set the video source.
   ///
