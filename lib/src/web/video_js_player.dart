@@ -220,7 +220,7 @@ class Player {
   /// @return Tech.prototype.audioTracks
   // external List<AudioTrack> audioTracks();
   // TODO: strictly typed tracks
-  external List<dynamic> audioTracks();
+  external dynamic audioTracks();
 
   /// Get or set the video source.
   ///
