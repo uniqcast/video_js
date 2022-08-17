@@ -172,7 +172,7 @@ class VideoJsController {
     return player.currentTime(value.toInt());
   }
 
-  Future<void> setAudioTrack(String index) async {
+  Future<void> setAudioTrack(int index) async {
     final player = await getPlayer();
     // TODO: add types for list
     final dynamic audioTrackList = player.audioTracks();
