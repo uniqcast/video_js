@@ -60,33 +60,6 @@ class PlayerOptions {
   });
 }
 
-/// An object that contains ranges of time for various reasons.
-/// @see https://developer.mozilla.org/en-US/docs/Web/API/TimeRanges
-@JS()
-@anonymous
-class TimeRange {
-  ///           The number of time ranges represented by this Object
-  external num get length;
-
-  /// Returns the time offset at which a specified time range ends.
-  ///
-  /// @param [index=0]
-  ///        The range number to return the time for.
-  ///
-  /// @return The time that offset at the specified index.
-  external num end(num index);
-
-  /// Returns the time offset at which a specified time range begins.
-  ///
-  /// @param [index=0]
-  ///        The range number to return the time for.
-  ///
-  /// @return The time that offset at the specified index.
-  external num start(num index);
-
-  external factory TimeRange();
-}
-
 @JS()
 @anonymous
 class Source {
@@ -229,7 +202,7 @@ class Player {
   /// @see [Buffered Spec]{@link http://dev.w3.org/html5/spec/video.html#dom-media-buffered}
   ///
   /// @return A mock TimeRange object (following HTML spec)
-  external TimeRange buffered();
+  external html.TimeRanges buffered();
 
   /// Get or set the video source.
   ///
