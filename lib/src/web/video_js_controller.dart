@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 
 import 'package:js/js.dart';
 import 'package:video_js/src/models/videoJs_options.dart';
+import 'package:video_js/src/models/videoJs_time_range.dart';
 import 'package:video_js/src/web/html_scripts.dart';
 import 'package:video_js/src/web/video_js.dart';
 import 'package:video_js/src/web/video_results.dart';
@@ -61,6 +62,25 @@ class VideoJsController {
         'pause',
         allowInterop(([arg1, arg2]) {
           VideoJsResults().addEvent(playerId, 'pause', true);
+        }),
+      );
+      player.on(
+        'loadstart',
+        allowInterop(([arg1, arg2]) {
+          VideoJsResults().addEvent(playerId, 'bufferingStart', true);
+        }),
+      );
+      player.on(
+        'progress',
+        allowInterop(([arg1, arg2]) {
+          final buffered = player.buffered();
+          final timeRange = VideoJsTimeRange(
+            start: buffered.start(0),
+            end: buffered.end(0),
+            duration: player.duration(),
+          );
+          VideoJsResults()
+              .addEvent(playerId, 'bufferingUpdate', timeRange.toJson());
         }),
       );
       player.eme();
@@ -149,15 +169,17 @@ class VideoJsController {
   /// play video
   play() async {
     final player = await getPlayer();
-    if (player.paused) {
-      return player.play();
+    if (player.paused()) {
+      await player.play();
     }
   }
 
   /// pause video
   pause() async {
     final player = await getPlayer();
-    return player.pause();
+    if (!player.paused()) {
+      player.pause();
+    }
   }
 
   /// To get video's current playing time in seconds
