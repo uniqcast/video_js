@@ -220,7 +220,7 @@ class Player {
   /// @return Tech.prototype.audioTracks
   // external List<AudioTrack> audioTracks();
   // TODO: strictly typed tracks
-  external List<dynamic> audioTracks();
+  external dynamic audioTracks();
 
   /// Get a TimeRange object with an array of the times of the video
   /// that have been downloaded. If you just want the percent of the

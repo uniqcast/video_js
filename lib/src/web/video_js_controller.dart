@@ -196,9 +196,17 @@ class VideoJsController {
 
   Future<void> setAudioTrack(int index) async {
     final player = await getPlayer();
-    // TODO: add types for list
-    final dynamic audioTrackList = player.audioTracks();
-    audioTrackList[index].enabled = true;
+
+    // final audioTrackList = player.audioTracks();
+    // if (audioTrackList == null) {
+    //   return;
+    // }
+    // final audioTrack = audioTrackList[index];
+    //
+    // if (audioTrack == null) {
+    //   return;
+    // }
+    // audioTrack.enabled = true;
   }
 
   dispose() async {
