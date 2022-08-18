@@ -64,12 +64,6 @@ class VideoJsController {
           VideoJsResults().addEvent(playerId, 'pause', true);
         }),
       );
-      // player.on(
-      //   'seeked',
-      //   allowInterop(([arg1, arg2]) {
-      //     VideoJsResults().addEvent(playerId, 'seek', player.currentTime());
-      //   }),
-      // );
       player.on(
         'loadstart',
         allowInterop(([arg1, arg2]) {
@@ -200,7 +194,7 @@ class VideoJsController {
     return player.currentTime(value.toInt());
   }
 
-  Future<void> setAudioTrack(String index) async {
+  Future<void> setAudioTrack(int index) async {
     final player = await getPlayer();
     // TODO: add types for list
     final dynamic audioTrackList = player.audioTracks();
