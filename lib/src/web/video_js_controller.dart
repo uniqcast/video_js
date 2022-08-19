@@ -194,19 +194,18 @@ class VideoJsController {
     return player.currentTime(value.toInt());
   }
 
-  Future<void> setAudioTrack(int index) async {
+  Future<void> setAudioTrack(int index, String id) async {
     final player = await getPlayer();
 
-    // final audioTrackList = player.audioTracks();
-    // if (audioTrackList == null) {
-    //   return;
-    // }
-    // final audioTrack = audioTrackList[index];
-    //
-    // if (audioTrack == null) {
-    //   return;
-    // }
-    // audioTrack.enabled = true;
+    final audioTrackList = player.audioTracks();
+
+    if (audioTrackList.length <= 0) {
+      return;
+    }
+    if (index < 0 || index > audioTrackList.length - 1) {
+      return;
+    }
+    audioTrackList.getTrackById(id).enabled = true;
   }
 
   dispose() async {
