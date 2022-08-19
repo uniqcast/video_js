@@ -107,9 +107,7 @@ class AudioTrack {
 @JS()
 class AudioTrackList {
   // To suppress missing implicit constructor warnings.
-  factory AudioTrackList._() {
-    throw UnsupportedError('Not supported');
-  }
+  external factory AudioTrackList._();
 
   /// The number of tracks in the list.
   external int get length;
