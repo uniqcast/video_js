@@ -94,9 +94,28 @@ class AudioTrack {
   /// The two letter language code for this track. Cannot be changed after creation.
   external String get language;
 
-  external bool get enabled;
+  external String get sourceBuffer;
+
+  external bool enabled;
 // TODO: how to set property to js
 // external void set enabled;
+}
+
+//
+///interface is used to represent a list of the audio tracks contained within a given HTML media element,
+/// with each track represented by a separate AudioTrack object in the list.
+@JS()
+class AudioTrackList {
+  // To suppress missing implicit constructor warnings.
+  factory AudioTrackList._() {
+    throw UnsupportedError('Not supported');
+  }
+
+  /// The number of tracks in the list.
+  external int get length;
+
+  /// returns the first AudioTrack object from the track list whose id matches the specified string
+  external AudioTrack getTrackById(String id);
 }
 
 @JS()
@@ -190,10 +209,10 @@ class Player {
 
   /// Get the {@link AudioTrackList}
   ///
-  /// @return Tech.prototype.audioTracks
-  // external List<AudioTrack> audioTracks();
+  /// @return AudioTrackList
   // TODO: strictly typed tracks
-  external dynamic audioTracks();
+
+  external AudioTrackList audioTracks();
 
   /// Get a TimeRange object with an array of the times of the video
   /// that have been downloaded. If you just want the percent of the
