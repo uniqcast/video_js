@@ -4,7 +4,6 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:js/js.dart';
-import 'package:video_js/src/web/html_scripts.dart';
 import 'package:video_js/src/web/until.dart';
 import 'package:video_js/src/web/video_js.dart';
 import 'package:video_js/video_js.dart';
@@ -20,8 +19,6 @@ class VideoJsController {
   late html.DivElement playerWrapperElement;
 
   VideoJsController(this.playerId, {this.videoJsOptions}) {
-    removeElementIfExist(videoJsWrapperId);
-
     textureId = _generateRandomString(7);
     playerWrapperElement = html.DivElement()
       ..id = videoJsWrapperId
@@ -251,6 +248,5 @@ class VideoJsController {
   dispose() async {
     final player = await getPlayer();
     player.dispose();
-    removeElementIfExist(videoJsWrapperId);
   }
 }
