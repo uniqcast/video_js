@@ -65,10 +65,6 @@ class VideoEvent {
       buffered.hashCode;
 }
 
-/// type can be onReady, onEnd, getVolume, isMute, isFull, isPaused, getCurrent, getDuration,
-/// getRemaining, getBuffered, getPoster, onReady
-/// [type] can be video/mp4, video/webm, application/x-mpegURL (for hls videos), ...
-
 /// Type of the event.
 ///
 /// Emitted by the platform implementation when the video is initialized or
@@ -130,30 +126,7 @@ class DurationRange {
   /// 1:00-2:00, this should be a `Duration` of two minutes.
   final Duration end;
 
-  /// Assumes that [duration] is the total length of the video that this
-  /// DurationRange is a segment form. It returns the percentage that [start] is
-  /// through the entire video.
-  ///
-  /// For example, assume that the entire video is 4 minutes long. If [start] has
-  /// a duration of one minute, this will return `0.25` since the DurationRange
-  /// starts 25% of the way through the video's total length.
-  double startFraction(Duration duration) {
-    return start.inMilliseconds / duration.inMilliseconds;
-  }
-
-  /// Assumes that [duration] is the total length of the video that this
-  /// DurationRange is a segment form. It returns the percentage that [start] is
-  /// through the entire video.
-  ///
-  /// For example, assume that the entire video is 4 minutes long. If [end] has a
-  /// duration of two minutes, this will return `0.5` since the DurationRange
-  /// ends 50% of the way through the video's total length.
-  double endFraction(Duration duration) {
-    return end.inMilliseconds / duration.inMilliseconds;
-  }
-
   @override
-  // ignore: no_runtimetype_tostring
   String toString() => '$runtimeType(start: $start, end: $end)';
 
   @override
