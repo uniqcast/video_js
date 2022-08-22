@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:video_js/src/models/result_from_video_js.dart';
+import 'package:video_js/src/models/video_event.dart';
 
 class VideoJsResults {
-  final StreamController<ResultFromVideoJs> _onVolumeFromJsStream =
-      StreamController<ResultFromVideoJs>.broadcast();
+  final StreamController<VideoEvent> _onVolumeFromJsStream =
+      StreamController<VideoEvent>.broadcast();
 
-  StreamController<ResultFromVideoJs> get onVolumeFromJsStream =>
+  StreamController<VideoEvent> get onVolumeFromJsStream =>
       _onVolumeFromJsStream;
 
   VideoJsResults._privateConstructor();
@@ -17,14 +17,8 @@ class VideoJsResults {
     return _instance;
   }
 
-  addEvent(String playerId, String type, dynamic value) {
-    _onVolumeFromJsStream.sink.add(
-      ResultFromVideoJs(
-        playerId,
-        type,
-        value.toString(),
-      ),
-    );
+  addEvent(VideoEvent event) {
+    _onVolumeFromJsStream.sink.add(event);
   }
 
   /// this function listening to every call back from javascript type
@@ -32,17 +26,14 @@ class VideoJsResults {
   /// getRemaining, getBuffered, getPoster, onReady
   listenToValueFromJs(
     String playerId,
-    String type,
-    Function(String) onJsValue,
+    VideoEventType type,
+    Function(VideoEvent) onJsValue,
   ) {
     StreamSubscription? subscription;
-    subscription = VideoJsResults()
-        .onVolumeFromJsStream
-        .stream
-        .listen((ResultFromVideoJs resulteFromVideoJs) {
-      if (playerId == resulteFromVideoJs.videoId &&
-          type == resulteFromVideoJs.type) {
-        onJsValue(resulteFromVideoJs.result);
+    subscription =
+        VideoJsResults().onVolumeFromJsStream.stream.listen((VideoEvent event) {
+      if (playerId == event.key && type == event.eventType) {
+        onJsValue(event);
         subscription!.cancel();
       }
     });

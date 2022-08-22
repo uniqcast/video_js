@@ -1,4 +1,4 @@
-class Source {
+class VideoSource {
   /// video source for streaming ( e.g. http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4 )
   final String src;
 
@@ -7,7 +7,7 @@ class Source {
 
   final Map<String, dynamic>? keySystems;
 
-  Source({required this.src, required this.type, this.keySystems});
+  VideoSource({required this.src, required this.type, this.keySystems});
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};

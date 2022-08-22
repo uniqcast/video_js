@@ -4,11 +4,10 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:js/js.dart';
-import 'package:video_js/src/models/videoJs_options.dart';
-import 'package:video_js/src/models/videoJs_time_range.dart';
 import 'package:video_js/src/web/html_scripts.dart';
+import 'package:video_js/src/web/until.dart';
 import 'package:video_js/src/web/video_js.dart';
-import 'package:video_js/src/web/video_results.dart';
+import 'package:video_js/video_js.dart';
 
 import 'video_js_player.dart';
 
@@ -49,38 +48,69 @@ class VideoJsController {
       player.on(
         'ended',
         allowInterop(([arg1, arg2]) {
-          VideoJsResults().addEvent(playerId, 'onEnd', true);
+          VideoJsResults().addEvent(
+            VideoEvent(key: playerId, eventType: VideoEventType.completed),
+          );
         }),
       );
       player.on(
         'play',
         allowInterop(([arg1, arg2]) {
-          VideoJsResults().addEvent(playerId, 'play', true);
+          VideoJsResults().addEvent(
+            VideoEvent(key: playerId, eventType: VideoEventType.play),
+          );
         }),
       );
       player.on(
         'pause',
         allowInterop(([arg1, arg2]) {
-          VideoJsResults().addEvent(playerId, 'pause', true);
+          VideoJsResults().addEvent(
+            VideoEvent(key: playerId, eventType: VideoEventType.pause),
+          );
         }),
       );
       player.on(
         'loadstart',
         allowInterop(([arg1, arg2]) {
-          VideoJsResults().addEvent(playerId, 'bufferingStart', true);
+          VideoJsResults().addEvent(
+            VideoEvent(
+              key: playerId,
+              eventType: VideoEventType.bufferingStart,
+            ),
+          );
         }),
       );
       player.on(
         'progress',
         allowInterop(([arg1, arg2]) {
           final buffered = player.buffered();
-          final timeRange = VideoJsTimeRange(
-            start: buffered.start(0),
-            end: buffered.end(0),
-            duration: player.duration(),
-          );
-          VideoJsResults()
-              .addEvent(playerId, 'bufferingUpdate', timeRange.toJson());
+          final duration = parseDuration(player.duration());
+          final bufferedRanges = Iterable<int>.generate(buffered.length)
+              .toList()
+              .map(
+                (e) => DurationRange(
+                  parseDuration(buffered.start(e)),
+                  parseDuration(buffered.end(e)),
+                ),
+              )
+              .toList();
+          if (bufferedRanges.isNotEmpty &&
+              bufferedRanges.last.end == duration) {
+            VideoJsResults().addEvent(
+              VideoEvent(
+                key: playerId,
+                eventType: VideoEventType.bufferingEnd,
+              ),
+            );
+          } else {
+            VideoJsResults().addEvent(
+              VideoEvent(
+                key: playerId,
+                eventType: VideoEventType.bufferingUpdate,
+                buffered: bufferedRanges,
+              ),
+            );
+          }
         }),
       );
       player.eme();
@@ -153,7 +183,17 @@ class VideoJsController {
     player.one(
       'loadedmetadata',
       allowInterop(([arg1, arg2]) {
-        VideoJsResults().addEvent(playerId, 'initialized', player.duration());
+        VideoJsResults().addEvent(
+          VideoEvent(
+            eventType: VideoEventType.initialized,
+            key: playerId,
+            duration: parseDuration(player.duration()),
+            size: ui.Size(
+              player.videoWidth().toDouble(),
+              player.videoHeight().toDouble(),
+            ),
+          ),
+        );
         completer.complete();
       }),
     );
@@ -183,15 +223,15 @@ class VideoJsController {
   }
 
   /// To get video's current playing time in seconds
-  Future<num> currentTime() async {
+  Future<Duration> currentTime() async {
     final player = await getPlayer();
-    return player.currentTime();
+    return parseDuration(player.currentTime());
   }
 
   /// Set video
-  setCurrentTime(num value) async {
+  setCurrentTime(Duration value) async {
     final player = await getPlayer();
-    return player.currentTime(value.toInt());
+    return player.currentTime(value.inSeconds);
   }
 
   Future<void> setAudioTrack(int index, String id) async {
