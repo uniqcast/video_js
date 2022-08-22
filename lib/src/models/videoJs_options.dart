@@ -1,4 +1,4 @@
-import 'package:video_js/src/models/source.dart';
+import 'package:video_js/src/models/video_source.dart';
 
 class VideoJsOptions {
   /// Determines whether or not the player has controls that the user can interact with.
@@ -53,7 +53,7 @@ class VideoJsOptions {
 
   /// An array of objects that mirror the native <video> element's capability to have a series of child
   /// <source> elements. This should be an array of objects with the src and type properties.
-  final List<Source>? sources;
+  final List<VideoSource>? sources;
 
   /// If set to true, then the no compatible source error will not be triggered immediately and instead will
   /// occur on the first user interaction. This is useful for Google's "mobile friendly" test tool, which can't

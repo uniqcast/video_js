@@ -205,6 +205,16 @@ class Player {
 
   external num currentTime([num value]);
 
+  /// Get video height
+  ///
+  /// @return current video height
+  external num videoHeight();
+
+  /// Get video width
+  ///
+  /// @return current video width
+  external num videoWidth();
+
   /// Get the {@link AudioTrackList}
   ///
   /// @return AudioTrackList
