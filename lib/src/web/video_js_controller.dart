@@ -17,6 +17,8 @@ class VideoJsController {
   final VideoJsOptions? videoJsOptions;
   late String textureId;
   late html.DivElement playerWrapperElement;
+  late Player player;
+  bool initialized = false;
 
   VideoJsController(this.playerId, {this.videoJsOptions}) {
     textureId = _generateRandomString(7);
@@ -41,7 +43,10 @@ class VideoJsController {
 
   Future<void> init() async {
     try {
-      final player = await initPlayer();
+      if (initialized) {
+        return;
+      }
+      player = await initPlayer();
       player.on(
         'ended',
         allowInterop(([arg1, arg2]) {
@@ -111,6 +116,7 @@ class VideoJsController {
         }),
       );
       player.eme();
+      initialized = true;
     } catch (e) {
       print(e);
     }
@@ -165,9 +171,6 @@ class VideoJsController {
     Map<String, String>? emeHeaders,
   }) async {
     final completer = Completer<void>();
-
-    final player = await getPlayer();
-
     player.src(
       Source(
         src: src,
@@ -176,7 +179,6 @@ class VideoJsController {
         emeHeaders: emeHeaders,
       ),
     );
-    await getPlayer();
     player.one(
       'loadedmetadata',
       allowInterop(([arg1, arg2]) {
@@ -199,13 +201,11 @@ class VideoJsController {
 
   /// set volume to video player
   Future<void> setVolume(double volume) async {
-    final player = await getPlayer();
     player.volume(volume);
   }
 
   /// play video
   play() async {
-    final player = await getPlayer();
     if (player.paused()) {
       await player.play();
     }
@@ -213,7 +213,6 @@ class VideoJsController {
 
   /// pause video
   pause() async {
-    final player = await getPlayer();
     if (!player.paused()) {
       player.pause();
     }
@@ -221,19 +220,15 @@ class VideoJsController {
 
   /// To get video's current playing time in seconds
   Future<Duration> currentTime() async {
-    final player = await getPlayer();
     return parseDuration(player.currentTime());
   }
 
   /// Set video
   setCurrentTime(Duration value) async {
-    final player = await getPlayer();
     return player.currentTime(value.inSeconds);
   }
 
   Future<void> setAudioTrack(int index, String id) async {
-    final player = await getPlayer();
-
     final audioTrackList = player.audioTracks();
 
     if (audioTrackList.length <= 0) {
@@ -246,7 +241,6 @@ class VideoJsController {
   }
 
   dispose() async {
-    final player = await getPlayer();
     player.dispose();
   }
 }
