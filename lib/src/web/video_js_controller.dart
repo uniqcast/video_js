@@ -31,6 +31,12 @@ class VideoJsController {
           ..className = 'video-js vjs-theme-city'
       ];
 
+    playerWrapperElement.addEventListener(
+      'contextmenu',
+      (event) => event.preventDefault(),
+      false,
+    );
+
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry
         .registerViewFactory(textureId, (int id) => playerWrapperElement);
