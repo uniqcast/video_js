@@ -22,18 +22,13 @@ class VideoJsController {
 
   VideoJsController(this.playerId, {this.videoJsOptions}) {
     textureId = _generateRandomString(7);
+
     playerWrapperElement = html.DivElement()
       ..id = videoJsWrapperId
-      ..style.width = '100%'
-      ..style.height = '100%'
       ..children = [
         html.VideoElement()
           ..id = playerId
-          ..style.minHeight = '100%'
-          ..style.minHeight = '100%'
-          ..style.width = '100%'
-          //..style.height = "auto"
-          ..className = 'video-js vjs-theme-city',
+          ..className = 'video-js vjs-theme-city'
       ];
 
     // ignore: undefined_prefixed_name
@@ -137,7 +132,6 @@ class VideoJsController {
       playerId,
       PlayerOptions(
         autoplay: true,
-        fill: true,
         autoSetup: true,
         children: ['MediaLoader', 'LiveTracker', 'ResizeManager'],
       ),
