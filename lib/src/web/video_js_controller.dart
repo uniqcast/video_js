@@ -144,19 +144,6 @@ class VideoJsController {
     return completer.future;
   }
 
-  Future<Player> getPlayer() {
-    final completer = Completer<Player>();
-
-    final player = videojs(playerId);
-    player.ready(
-      allowInterop(() {
-        completer.complete(player);
-      }),
-    );
-
-    return completer.future;
-  }
-
   /// to set video source by type
   /// [type] can be video/mp4, video/webm, application/x-mpegURL (for hls videos), ...
   Future<void> setSRC(
