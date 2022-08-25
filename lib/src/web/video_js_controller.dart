@@ -22,19 +22,20 @@ class VideoJsController {
 
   VideoJsController(this.playerId, {this.videoJsOptions}) {
     textureId = _generateRandomString(7);
+
     playerWrapperElement = html.DivElement()
       ..id = videoJsWrapperId
-      ..style.width = '100%'
-      ..style.height = '100%'
       ..children = [
         html.VideoElement()
           ..id = playerId
-          ..style.minHeight = '100%'
-          ..style.minHeight = '100%'
-          ..style.width = '100%'
-          //..style.height = "auto"
-          ..className = 'video-js vjs-theme-city',
+          ..className = 'video-js vjs-theme-city'
       ];
+
+    playerWrapperElement.addEventListener(
+      'contextmenu',
+      (event) => event.preventDefault(),
+      false,
+    );
 
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry
@@ -137,8 +138,8 @@ class VideoJsController {
       playerId,
       PlayerOptions(
         autoplay: true,
-        fill: true,
         autoSetup: true,
+        children: ['MediaLoader', 'LiveTracker', 'ResizeManager'],
       ),
     );
     player.ready(
@@ -146,19 +147,6 @@ class VideoJsController {
         completer.complete(player);
       }),
     );
-    return completer.future;
-  }
-
-  Future<Player> getPlayer() {
-    final completer = Completer<Player>();
-
-    final player = videojs(playerId);
-    player.ready(
-      allowInterop(() {
-        completer.complete(player);
-      }),
-    );
-
     return completer.future;
   }
 

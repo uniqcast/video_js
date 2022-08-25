@@ -40,6 +40,8 @@ class PlayerOptions {
 
   external bool? get retryOnError;
 
+  external dynamic get children;
+
   external factory PlayerOptions({
     String? aspectRatio,
     bool? autoplay,
@@ -57,6 +59,7 @@ class PlayerOptions {
     bool? autoSetup,
     String? id,
     bool? retryOnError,
+    dynamic children,
   });
 }
 
@@ -67,7 +70,7 @@ class Source {
 
   external String get type;
 
-  external Map<String, dynamic>? get getkeySystems;
+  external Map<String, dynamic>? get keySystems;
 
   external Map<String, String>? get emeHeaders;
 
