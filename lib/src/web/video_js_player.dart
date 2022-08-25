@@ -70,7 +70,7 @@ class Source {
 
   external String get type;
 
-  external Map<String, dynamic>? get getkeySystems;
+  external Map<String, dynamic>? get keySystems;
 
   external Map<String, String>? get emeHeaders;
 
