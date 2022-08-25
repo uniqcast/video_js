@@ -139,6 +139,7 @@ class VideoJsController {
         autoplay: true,
         fill: true,
         autoSetup: true,
+        children: ['MediaLoader', 'LiveTracker', 'ResizeManager'],
       ),
     );
     player.ready(
