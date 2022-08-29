@@ -40,6 +40,8 @@ class PlayerOptions {
 
   external bool? get retryOnError;
 
+  external dynamic get html5;
+
   external dynamic get children;
 
   external factory PlayerOptions({
@@ -59,7 +61,24 @@ class PlayerOptions {
     bool? autoSetup,
     String? id,
     bool? retryOnError,
+    dynamic html5,
     dynamic children,
+  });
+}
+
+@JS()
+@anonymous
+class Html5Options {
+  external factory Html5Options({
+    VhsOptions vhs,
+  });
+}
+
+@JS()
+@anonymous
+class VhsOptions {
+  external factory VhsOptions({
+    bool limitRenditionByPlayerDimensions,
   });
 }
 
@@ -121,13 +140,35 @@ class AudioTrackList {
 
 @JS()
 @anonymous
+class Tech {
+  external VHS get vhs;
+
+  external num currentHeight();
+
+  external num currentWidth();
+}
+
+@JS()
+@anonymous
+class VHS {
+  external set selectPlaylist(dynamic value);
+
+  external dynamic get stats;
+
+  external dynamic get master;
+}
+
+@JS()
+@anonymous
 class QualityLevels {
   external factory QualityLevels._();
 
   external void trigger(dynamic value);
+
   external void on(String type, EventCallback callback);
 
   external int get selectedIndex;
+
   external set selectedIndex_(int value);
 
   external int length;
@@ -156,6 +197,7 @@ class Representation {
   external num get bitrate;
 
   external bool get enabled;
+
   external set enabled(bool value);
 }
 

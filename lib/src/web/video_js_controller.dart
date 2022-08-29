@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:js/js.dart';
+import 'package:video_js/src/web/json.dart';
 import 'package:video_js/src/web/until.dart';
 import 'package:video_js/src/web/video_js.dart';
 import 'package:video_js/video_js.dart';
@@ -25,10 +26,12 @@ class VideoJsController {
 
     playerWrapperElement = html.DivElement()
       ..id = videoJsWrapperId
+      ..style.width = '100%'
+      ..style.height = '100%'
       ..children = [
         html.VideoElement()
           ..id = playerId
-          ..className = 'video-js vjs-theme-city'
+          ..className = 'video-js vjs-default-skin'
       ];
 
     playerWrapperElement.addEventListener(
@@ -139,7 +142,12 @@ class VideoJsController {
       PlayerOptions(
         autoplay: true,
         autoSetup: true,
+        fluid: true,
+        aspectRatio: '16:9',
         children: ['MediaLoader', 'LiveTracker', 'ResizeManager'],
+        html5: Html5Options(
+          vhs: VhsOptions(limitRenditionByPlayerDimensions: false),
+        ),
       ),
     );
     player.ready(
