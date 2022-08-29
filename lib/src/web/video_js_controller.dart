@@ -228,6 +228,32 @@ class VideoJsController {
     audioTrackList.getTrackById(id).enabled = true;
   }
 
+  Future<QualityLevels> getQualityLevels() async {
+    return player.qualityLevels();
+  }
+
+  Future<void> setDefaultTrack() async {
+    final qualityLevels = player.qualityLevels();
+    for (int index = 0; index < qualityLevels.length; ++index) {
+      final quality = qualityLevels.levels_[index];
+      quality.enabled = true;
+    }
+  }
+
+  Future<void> setQualityLevel(int bitrate, int? width, int? height) async {
+    final qualityLevels = player.qualityLevels();
+    for (int index = 0; index < qualityLevels.length; ++index) {
+      final quality = qualityLevels.levels_[index];
+      if (quality.bitrate == bitrate &&
+          (width != null ? quality.width == width : true) &&
+          (height != null ? quality.height == height : true)) {
+        quality.enabled = true;
+      } else {
+        quality.enabled = false;
+      }
+    }
+  }
+
   dispose() async {
     player.dispose();
   }

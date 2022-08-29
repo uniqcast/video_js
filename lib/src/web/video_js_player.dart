@@ -120,6 +120,46 @@ class AudioTrackList {
 }
 
 @JS()
+@anonymous
+class QualityLevels {
+  external factory QualityLevels._();
+
+  external void trigger(dynamic value);
+  external void on(String type, EventCallback callback);
+
+  external int get selectedIndex;
+  external set selectedIndex_(int value);
+
+  external int length;
+
+  external List<Representation> get levels_;
+}
+
+@JS()
+@anonymous
+class QualityChangeEvent {
+  external factory QualityChangeEvent({
+    required String type,
+    required num selectedIndex,
+  });
+}
+
+@JS()
+@anonymous
+class Representation {
+  external String get id;
+
+  external num get width;
+
+  external num get height;
+
+  external num get bitrate;
+
+  external bool get enabled;
+  external set enabled(bool value);
+}
+
+@JS()
 class Player {
   /// Bind a listener to the component's ready state.
   /// Different from event listeners in that if the ready event has already happened
@@ -204,8 +244,6 @@ class Player {
   ///        The time to seek to in seconds
   ///
   /// @return - the current time in seconds when getting
-  // external void currentTime(num seconds): void;
-
   external num currentTime([num value]);
 
   /// Get video height
@@ -252,6 +290,10 @@ class Player {
   external void src(Source source);
 
   external void eme();
+
+  external QualityLevels qualityLevels();
+
+  external Tech tech();
 
   /// Determine whether or not this component has been disposed.
   ///
