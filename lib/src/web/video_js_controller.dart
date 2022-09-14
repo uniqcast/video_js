@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:html' as html;
+import 'dart:js_util';
 import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:js/js.dart';
-import 'package:video_js/src/web/json.dart';
 import 'package:video_js/src/web/until.dart';
 import 'package:video_js/src/web/video_js.dart';
 import 'package:video_js/video_js.dart';
@@ -140,7 +140,7 @@ class VideoJsController {
     final player = videojs(
       playerId,
       PlayerOptions(
-        autoplay: true,
+        autoplay: false,
         autoSetup: true,
         fluid: true,
         aspectRatio: '16:9',
@@ -192,6 +192,13 @@ class VideoJsController {
         completer.complete();
       }),
     );
+
+    final promise = promiseToFuture(player.play());
+    promise.then((value) {
+      // do nothing, the completer.complete will call after metaData is available
+    }).onError((error, stackTrace) {
+      completer.completeError(error ?? Exception(), stackTrace);
+    });
     return completer.future;
   }
 
@@ -202,6 +209,7 @@ class VideoJsController {
 
   /// play video
   play() async {
+    setVolume(1);
     if (player.paused()) {
       await player.play();
     }
