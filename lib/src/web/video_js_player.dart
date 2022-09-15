@@ -252,7 +252,7 @@ class Player {
   ///         is ready to begin playback. For some browsers and all non-ready
   ///         situations, this will return `undefined`.
   @JS()
-  external play();
+  external Object play();
 
   /// Normally gets the length in time of the video in seconds;
   /// in all but the rarest use cases an argument will NOT be passed to the method
