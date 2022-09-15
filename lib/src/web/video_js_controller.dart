@@ -209,7 +209,6 @@ class VideoJsController {
 
   /// play video
   play() async {
-    setVolume(1);
     if (player.paused()) {
       await player.play();
     }
