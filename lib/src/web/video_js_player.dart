@@ -251,7 +251,8 @@ class Player {
   /// @return Returns a `Promise` only if the browser returns one and the player
   ///         is ready to begin playback. For some browsers and all non-ready
   ///         situations, this will return `undefined`.
-  external Future<void>? play();
+  @JS()
+  external Object play();
 
   /// Normally gets the length in time of the video in seconds;
   /// in all but the rarest use cases an argument will NOT be passed to the method

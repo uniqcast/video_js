@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:html' as html;
+import 'dart:js_util';
 import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:js/js.dart';
-import 'package:video_js/src/web/json.dart';
 import 'package:video_js/src/web/until.dart';
 import 'package:video_js/src/web/video_js.dart';
 import 'package:video_js/video_js.dart';
@@ -119,6 +119,23 @@ class VideoJsController {
           }
         }),
       );
+      player.on(
+        'loadedmetadata',
+        allowInterop(([arg1, arg2]) {
+          print('VIDEO_JS: loadedmetadata');
+          VideoJsResults().addEvent(
+            VideoEvent(
+              eventType: VideoEventType.initialized,
+              key: playerId,
+              duration: parseDuration(player.duration()),
+              size: ui.Size(
+                player.videoWidth().toDouble(),
+                player.videoHeight().toDouble(),
+              ),
+            ),
+          );
+        }),
+      );
       player.eme();
       initialized = true;
     } catch (e) {
@@ -140,7 +157,7 @@ class VideoJsController {
     final player = videojs(
       playerId,
       PlayerOptions(
-        autoplay: true,
+        autoplay: false,
         autoSetup: true,
         fluid: true,
         aspectRatio: '16:9',
@@ -178,20 +195,21 @@ class VideoJsController {
     player.one(
       'loadedmetadata',
       allowInterop(([arg1, arg2]) {
-        VideoJsResults().addEvent(
-          VideoEvent(
-            eventType: VideoEventType.initialized,
-            key: playerId,
-            duration: parseDuration(player.duration()),
-            size: ui.Size(
-              player.videoWidth().toDouble(),
-              player.videoHeight().toDouble(),
-            ),
-          ),
-        );
-        completer.complete();
+        print('VIDEO_JS: loadedmetadata on setSrc');
+        if (!completer.isCompleted) {
+          print('VIDEO_JS: loadedmetadata calling completer.complete()');
+          completer.complete();
+        }
       }),
     );
+    // timeout for setting source in case we have live stream, the loadedmetadata event are not calling upon setting source
+    Future.delayed(const Duration(seconds: 2), () {
+      print('VIDEO_JS: timeout!!');
+      if (!completer.isCompleted) {
+        print('VIDEO_JS: calliing completer.complete()');
+        completer.completeError(TimeoutException('timeout on setting source'));
+      }
+    });
     return completer.future;
   }
 
@@ -201,10 +219,22 @@ class VideoJsController {
   }
 
   /// play video
-  play() async {
-    if (player.paused()) {
-      await player.play();
+  Future<void> play() async {
+    if (!player.paused()) {
+      return;
     }
+    final completer = Completer<void>();
+    final promise = promiseToFuture(player.play());
+    promise.then((value) {
+      print('VIDEO_JS: promise completed!');
+      completer.complete();
+    }).onError((error, stackTrace) {
+      print('VIDEO_JS: promise ERROR!: ${completer.isCompleted}');
+      if (!completer.isCompleted) {
+        completer.completeError(error ?? Exception(), stackTrace);
+      }
+    });
+    return completer.future;
   }
 
   /// pause video
