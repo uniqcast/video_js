@@ -5,7 +5,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:js/js.dart';
-import 'package:video_js/src/web/until.dart';
+import 'package:video_js/src/web/util.dart';
 import 'package:video_js/src/web/video_js.dart';
 import 'package:video_js/video_js.dart';
 
@@ -91,38 +91,40 @@ class VideoJsController {
         allowInterop(([arg1, arg2]) {
           final buffered = player.buffered();
           final duration = parseDuration(player.duration());
-          final bufferedRanges = Iterable<int>.generate(buffered.length)
+          final bufferedRanges = Iterable<int>.generate(buffered?.length ?? 0)
               .toList()
               .map(
                 (e) => DurationRange(
-                  parseDuration(buffered.start(e)),
+                  parseDuration(buffered!.start(e)),
                   parseDuration(buffered.end(e)),
                 ),
               )
               .toList();
-          if (bufferedRanges.isNotEmpty &&
-              bufferedRanges.last.end == duration) {
-            VideoJsResults().addEvent(
-              VideoEvent(
-                key: playerId,
-                eventType: VideoEventType.bufferingEnd,
-              ),
-            );
-          } else {
-            VideoJsResults().addEvent(
-              VideoEvent(
-                key: playerId,
-                eventType: VideoEventType.bufferingUpdate,
-                buffered: bufferedRanges,
-              ),
-            );
+          if (bufferedRanges.isNotEmpty) {
+            if (bufferedRanges.last.end == duration) {
+              VideoJsResults().addEvent(
+                VideoEvent(
+                  key: playerId,
+                  eventType: VideoEventType.bufferingEnd,
+                ),
+              );
+            } else {
+              VideoJsResults().addEvent(
+                VideoEvent(
+                  key: playerId,
+                  eventType: VideoEventType.bufferingUpdate,
+                  buffered: bufferedRanges,
+                ),
+              );
+            }
           }
         }),
       );
       player.on(
         'loadedmetadata',
         allowInterop(([arg1, arg2]) {
-          print('VIDEO_JS: loadedmetadata');
+          print(
+              'VIDEO_JS: loadedmetadata duration: ${player.duration()} width: ${player.videoWidth().toDouble()} height:  ${player.videoHeight().toDouble()}');
           VideoJsResults().addEvent(
             VideoEvent(
               eventType: VideoEventType.initialized,
@@ -157,7 +159,7 @@ class VideoJsController {
     final player = videojs(
       playerId,
       PlayerOptions(
-        autoplay: false,
+        autoplay: true,
         autoSetup: true,
         fluid: true,
         aspectRatio: '16:9',
@@ -188,8 +190,8 @@ class VideoJsController {
       Source(
         src: src,
         type: type,
-        keySystems: keySystems,
-        emeHeaders: emeHeaders,
+        keySystems: keySystems != null ? mapToJsObject(keySystems) : null,
+        emeHeaders: emeHeaders != null ? mapToJsObject(emeHeaders) : null,
       ),
     );
     player.one(
@@ -203,9 +205,9 @@ class VideoJsController {
       }),
     );
     // timeout for setting source in case we have live stream, the loadedmetadata event are not calling upon setting source
-    Future.delayed(const Duration(seconds: 2), () {
-      print('VIDEO_JS: timeout!!');
+    Future.delayed(const Duration(seconds: 5), () {
       if (!completer.isCompleted) {
+        print('VIDEO_JS: timeout!!');
         print('VIDEO_JS: calliing completer.complete()');
         completer.completeError(TimeoutException('timeout on setting source'));
       }
