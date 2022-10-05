@@ -91,31 +91,32 @@ class VideoJsController {
         allowInterop(([arg1, arg2]) {
           final buffered = player.buffered();
           final duration = parseDuration(player.duration());
-          final bufferedRanges = Iterable<int>.generate(buffered.length)
+          final bufferedRanges = Iterable<int>.generate(buffered?.length ?? 0)
               .toList()
               .map(
                 (e) => DurationRange(
-                  parseDuration(buffered.start(e)),
+                  parseDuration(buffered!.start(e)),
                   parseDuration(buffered.end(e)),
                 ),
               )
               .toList();
-          if (bufferedRanges.isNotEmpty &&
-              bufferedRanges.last.end == duration) {
-            VideoJsResults().addEvent(
-              VideoEvent(
-                key: playerId,
-                eventType: VideoEventType.bufferingEnd,
-              ),
-            );
-          } else {
-            VideoJsResults().addEvent(
-              VideoEvent(
-                key: playerId,
-                eventType: VideoEventType.bufferingUpdate,
-                buffered: bufferedRanges,
-              ),
-            );
+          if (bufferedRanges.isNotEmpty) {
+            if (bufferedRanges.last.end == duration) {
+              VideoJsResults().addEvent(
+                VideoEvent(
+                  key: playerId,
+                  eventType: VideoEventType.bufferingEnd,
+                ),
+              );
+            } else {
+              VideoJsResults().addEvent(
+                VideoEvent(
+                  key: playerId,
+                  eventType: VideoEventType.bufferingUpdate,
+                  buffered: bufferedRanges,
+                ),
+              );
+            }
           }
         }),
       );
