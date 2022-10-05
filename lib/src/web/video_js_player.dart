@@ -89,15 +89,15 @@ class Source {
 
   external String get type;
 
-  external Map<String, dynamic>? get keySystems;
+  external Object? get keySystems;
 
-  external Map<String, String>? get emeHeaders;
+  external Object? get emeHeaders;
 
   external factory Source({
     required String src,
     required String type,
-    Map<String, dynamic>? keySystems,
-    Map<String, String>? emeHeaders,
+    Object? keySystems,
+    Object? emeHeaders,
   });
 }
 
@@ -313,7 +313,7 @@ class Player {
   /// @see [Buffered Spec]{@link http://dev.w3.org/html5/spec/video.html#dom-media-buffered}
   ///
   /// @return A mock TimeRange object (following HTML spec)
-  external html.TimeRanges buffered();
+  external html.TimeRanges? buffered();
 
   /// Get or set the video source.
   ///
